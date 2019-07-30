@@ -1,12 +1,14 @@
 '''
 Created on Jul 29, 2019
-
+# -*- coding: utf-8 -*-  
 @author: tfu
 '''
+
 import requests
 from bs4 import BeautifulSoup
 from werkzeug import urls
 import os
+import re
 
 url='https://www.woodenears.com/list?category=5b6171cf823aea488f19e1d0&name=%E8%80%B3%E6%9C%BA%E6%B5%8B%E9%87%8F%E6%8A%A5%E5%91%8A'
 baseJumpRoot='https://www.woodenears.com'
@@ -43,17 +45,26 @@ def getjumplink(baseJumpRoot,indexList):
     return pageList
 
 
-
+def getReportName(html):
+    soup=BeautifulSoup(html,"html.parser")
+    reportName=soup.find('div',id="infos").h1.text
+    cutName=re.search(r'/| .+', reportName)
+    cutName=cutName.group(0)[3:]
+    return cutName
+    
 def savePics(pageList):
     for pagelink in pageList:
         html=getHtml(pagelink)
         soup=BeautifulSoup(html,"html.parser")
+        reportName=getReportName(html)
+        i=1
         all_img=soup.find('div',class_='content-container').find_all('img')    
         for img in all_img:
             src=img['src']
             print(src)
             root='D:/wormgetpic/'
-            path=root + src.split('/')[-1]+'.jpg'
+            path=root + getReportName(html)+ str(i) +'.jpg'
+            i=i+1
             try:
                 if not os.path.exists(root):
                     os.mkdir(root)
@@ -66,15 +77,25 @@ def savePics(pageList):
                     print('Already Exist')       
             except Exception as e:
                 print(e)
-            
-pagelist=['https://www.woodenears.com/article/5bed14bbbcd7ab780aff6e0e']
-savePics(pagelist)
+                
+'''                   
+html=getHtml('https://www.woodenears.com/article/5bed14bbbcd7ab780aff6e0e')                
+name=getReportName(html)
+print(name)
 
-'''
 pageRange=getPageRange(url)
 indexList=getHtmlUrl(url,pageRange)
 pageList = getjumplink(baseJumpRoot,indexList)
-print(pageList)
-'''   
+print(pageList)                
+                
+                
+                
+'''            
+pagelist=['https://www.woodenears.com/article/5bed14bbbcd7ab780aff6e0e']
+savePics(pagelist)
+
+
+
+
 
 
