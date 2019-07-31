@@ -21,6 +21,8 @@ def main():
     indexlist=getHtmlUrl(url)
     pageList=getjumplink(baseJumpRoot,indexlist)
     savePics(pageList,root)
+# savePics(pageList,root,contidueMode=0,startPoint=0,endPoint=9999):
+# To activate continue mode, change the value to 1 and input a start point.
 
 main()
                 

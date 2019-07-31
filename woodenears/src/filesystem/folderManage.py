@@ -21,11 +21,13 @@ def makeFilePath(forlderpath,reportName,i):
 def checkmakefolder(root):
     if not os.path.exists(root):
         os.mkdir(root)
-        print("Folder Created: %s",root)
+        print("Folder Created: ",root)
 
 
-def savePics(pageList,root):
+def savePics(pageList,root,contidueMode=0,startPoint=0,endPoint=9999):
     checkmakefolder(root)
+    if contidueMode==1:
+        pageList=pageList[startPoint:endPoint]
     for pagelink in pageList:
         html=getHtml(pagelink)
         soup=BeautifulSoup(html,"html.parser")
